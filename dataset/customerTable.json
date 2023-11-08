@@ -1,0 +1,27 @@
+{
+	"name": "customerTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lsAppDb20231107",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "customerid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "customername",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "customer"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

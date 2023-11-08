@@ -1,0 +1,46 @@
+{
+	"name": "OrdersInPool",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSynapseAnalytics1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "ordersSK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "orderId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "customerId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CustomerName",
+				"type": "varchar"
+			},
+			{
+				"name": "OrderNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "TotalAmount",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "orders"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

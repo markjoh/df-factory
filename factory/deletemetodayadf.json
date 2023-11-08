@@ -1,0 +1,9 @@
+{
+	"name": "deletemetodayadf",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "7c9644e6-c94f-4b79-a891-f1ac5be1102e",
+		"tenantId": "e53f2cd9-5bb1-4600-a3bb-de2eeae0e0b3"
+	}
+}

@@ -1,0 +1,32 @@
+{
+	"name": "orderheadertable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lsAppDb20231107",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "orderid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ordernumber",
+				"type": "varchar"
+			},
+			{
+				"name": "customerid",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "orderheader"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

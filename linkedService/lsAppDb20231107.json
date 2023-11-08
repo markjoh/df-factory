@@ -1,0 +1,12 @@
+{
+	"name": "lsAppDb20231107",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=dbserver2023mrj.database.windows.net;initial catalog=appdb_2023-11-07T17-12Z;user id=sqladmin",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEMwNjU3Mzc2LUMwNTUtNDE4QS04MTk4LTJCODM2NDZGRTYxOF81YWFkZmJjZS1kMzAxLTRhNmEtYTM0MC05NTllMzE5ZjBkOWUiDQp9"
+		}
+	}
+}
