@@ -1123,7 +1123,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"url": "https://mrjstrggen2anonne3.blob.core.windows.net/csv/Log.csv",
+							"url": "https://mrjstrggen2anonne3.blob.core.windows.net/csv/Customer01.csv",
 							"method": "GET",
 							"headers": {}
 						}
