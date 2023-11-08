@@ -420,14 +420,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataset": {
-								"referenceName": "dsCSV_log",
+								"referenceName": "dsCSV_customer",
 								"type": "DatasetReference",
-								"parameters": {
-									"filename": "Log.csv"
-								}
+								"parameters": {}
 							},
 							"fieldList": [
-								"childItems"
+								"columnCount"
 							],
 							"storeSettings": {
 								"type": "AzureBlobFSReadSettings",
@@ -446,7 +444,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/dsCSV_log')]"
+				"[concat(variables('factoryId'), '/datasets/dsCSV_customer')]"
 			]
 		},
 		{
