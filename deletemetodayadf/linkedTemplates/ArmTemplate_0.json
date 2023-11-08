@@ -23,19 +23,27 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'lsAppdb'"
 		},
+		"lsCSVCustomer_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'lsCSVCustomer'"
+		},
 		"lsCSV_log_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'lsCSV_log'"
-		},
-		"lsparquet_log_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'lsparquet_log'"
 		},
 		"lsCSV_new_log_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'lsCSV_new_log'"
 		},
+		"lsparquet_log_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'lsparquet_log'"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
+		},
+		"lsCSVCustomer_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
 		},
@@ -43,11 +51,11 @@
 			"type": "string",
 			"defaultValue": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
 		},
-		"lsparquet_log_properties_typeProperties_url": {
+		"lsCSV_new_log_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
 		},
-		"lsCSV_new_log_properties_typeProperties_url": {
+		"lsparquet_log_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
 		}
@@ -56,6 +64,38 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline3')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetLogCSVFile",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://mrjstrggen2anonne3.blob.core.windows.net/csv/Customer01.csv",
+							"method": "GET",
+							"headers": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -113,6 +153,23 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/lsCSVCustomer')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('lsCSVCustomer_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('lsCSVCustomer_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/lsCSV_log')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -124,23 +181,6 @@
 					"accountKey": {
 						"type": "SecureString",
 						"value": "[parameters('lsCSV_log_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/lsparquet_log')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('lsparquet_log_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('lsparquet_log_accountKey')]"
 					}
 				}
 			},
@@ -164,34 +204,19 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline3')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/lsparquet_log')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "GetLogCSVFile",
-						"type": "WebActivity",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "https://mrjstrggen2anonne3.blob.core.windows.net/csv/Customer01.csv",
-							"method": "GET",
-							"headers": {}
-						}
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('lsparquet_log_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('lsparquet_log_accountKey')]"
 					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
+				}
 			},
 			"dependsOn": []
 		},
@@ -300,6 +325,34 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/dsCSV_customer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsCSVCustomer",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Customer01.csv",
+						"fileSystem": "csv"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsCSVCustomer')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dsCSV_log')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -379,6 +432,88 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/lsCSV_log')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dsCSV_new_log')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsCSV_new_log",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string",
+						"defaultValue": "log.csv"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"fileSystem": "csv"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Id",
+						"type": "String"
+					},
+					{
+						"name": "Correlationid",
+						"type": "String"
+					},
+					{
+						"name": "Operationname",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					},
+					{
+						"name": "Eventcategory",
+						"type": "String"
+					},
+					{
+						"name": "Level",
+						"type": "String"
+					},
+					{
+						"name": "Time",
+						"type": "String"
+					},
+					{
+						"name": "Subscription",
+						"type": "String"
+					},
+					{
+						"name": "Eventinitiatedby",
+						"type": "String"
+					},
+					{
+						"name": "Resourcetype",
+						"type": "String"
+					},
+					{
+						"name": "Resourcegroup",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsCSV_new_log')]"
 			]
 		},
 		{
@@ -488,85 +623,52 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dsCSV_new_log')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/pipeline4')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "lsCSV_new_log",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"filename": {
-						"type": "string",
-						"defaultValue": "log.csv"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().filename",
-							"type": "Expression"
+				"activities": [
+					{
+						"name": "GetMetaDataBlobs",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
 						},
-						"fileSystem": "csv"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "Id",
-						"type": "String"
-					},
-					{
-						"name": "Correlationid",
-						"type": "String"
-					},
-					{
-						"name": "Operationname",
-						"type": "String"
-					},
-					{
-						"name": "Status",
-						"type": "String"
-					},
-					{
-						"name": "Eventcategory",
-						"type": "String"
-					},
-					{
-						"name": "Level",
-						"type": "String"
-					},
-					{
-						"name": "Time",
-						"type": "String"
-					},
-					{
-						"name": "Subscription",
-						"type": "String"
-					},
-					{
-						"name": "Eventinitiatedby",
-						"type": "String"
-					},
-					{
-						"name": "Resourcetype",
-						"type": "String"
-					},
-					{
-						"name": "Resourcegroup",
-						"type": "String"
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "dsCSV_log",
+								"type": "DatasetReference",
+								"parameters": {
+									"filename": "Log.csv"
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
 					}
-				]
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/lsCSV_new_log')]"
+				"[concat(variables('factoryId'), '/datasets/dsCSV_log')]"
 			]
 		},
 		{
@@ -830,310 +932,6 @@
 				"[concat(variables('factoryId'), '/datasets/customerTable')]",
 				"[concat(variables('factoryId'), '/datasets/orderheadertable')]",
 				"[concat(variables('factoryId'), '/datasets/OrdersInPool')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "translatelogcsvtoparquet",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflow1",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"logcsvstream": {
-										"filename": "Log.csv"
-									},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "copylogcsvtoavro",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AvroSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "AvroWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "Id",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Id",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Correlationid",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Correlationid",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Operationname",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Operationname",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Status",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Status",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Eventcategory",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Eventcategory",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Level",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Level",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Time",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Time",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Subscription",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Subscription",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Eventinitiatedby",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Eventinitiatedby",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Resourcetype",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Resourcetype",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Resourcegroup",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Resourcegroup",
-											"type": "String",
-											"physicalType": "String"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "dsCSV_log",
-								"type": "DatasetReference",
-								"parameters": {
-									"filename": "Log.csv"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "LogAvro",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-11-07T16:50:53Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflow1')]",
-				"[concat(variables('factoryId'), '/datasets/dsCSV_log')]",
-				"[concat(variables('factoryId'), '/datasets/LogAvro')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "createorderstable",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflow2",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"customertablestream": {},
-									"orderheaderstream": {},
-									"GETMAXCustomerSK": {},
-									"ListOfOrderIds": {},
-									"OrdersSKSink": {},
-									"dimOrders": {}
-								}
-							},
-							"staging": {
-								"linkedService": {
-									"referenceName": "lsparquet_log",
-									"type": "LinkedServiceReference"
-								},
-								"folderPath": "staging"
-							},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine",
-							"sourceStagingConcurrency": 1
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2023-11-07T17:37:50Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflow2')]",
-				"[concat(variables('factoryId'), '/linkedServices/lsparquet_log')]"
 			]
 		}
 	]
