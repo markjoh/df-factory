@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "deletemetodayadf"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureSynapseAnalytics1_connectionString": {
+			"value": ""
+		},
+		"lsAppDb20231107_connectionString": {
+			"value": ""
+		},
+		"lsAppdb_connectionString": {
+			"value": ""
+		},
+		"lsCSV_log_accountKey": {
+			"value": ""
+		},
+		"lsparquet_log_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
+		},
+		"lsCSV_log_properties_typeProperties_url": {
+			"value": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
+		},
+		"lsparquet_log_properties_typeProperties_url": {
+			"value": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
