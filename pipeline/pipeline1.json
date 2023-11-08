@@ -206,7 +206,10 @@
 				"inputs": [
 					{
 						"referenceName": "dsCSV_log",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": "log.csv"
+						}
 					}
 				],
 				"outputs": [
