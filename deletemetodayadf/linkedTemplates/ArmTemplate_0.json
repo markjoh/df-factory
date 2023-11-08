@@ -623,6 +623,91 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DimCustomerCSVMetaData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsCSV_log",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "DimCustomer",
+						"fileSystem": "csv"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "NameStyle",
+						"type": "String"
+					},
+					{
+						"name": "Title",
+						"type": "String"
+					},
+					{
+						"name": "FirstName",
+						"type": "String"
+					},
+					{
+						"name": "MiddleName",
+						"type": "String"
+					},
+					{
+						"name": "LastName",
+						"type": "String"
+					},
+					{
+						"name": "Suffix",
+						"type": "String"
+					},
+					{
+						"name": "CompanyName",
+						"type": "String"
+					},
+					{
+						"name": "SalesPerson",
+						"type": "String"
+					},
+					{
+						"name": "EmailAddress",
+						"type": "String"
+					},
+					{
+						"name": "Phone",
+						"type": "String"
+					},
+					{
+						"name": "PasswordHash",
+						"type": "String"
+					},
+					{
+						"name": "PasswordSalt",
+						"type": "String"
+					},
+					{
+						"name": "rowguid",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsCSV_log')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pipeline4')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -758,178 +843,6 @@
 				"[concat(variables('factoryId'), '/datasets/dsCSV_log')]",
 				"[concat(variables('factoryId'), '/datasets/dsparquet_log')]",
 				"[concat(variables('factoryId'), '/linkedServices/lsparquet_log')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow2')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "customerTable",
-								"type": "DatasetReference"
-							},
-							"name": "customertablestream"
-						},
-						{
-							"dataset": {
-								"referenceName": "orderheadertable",
-								"type": "DatasetReference"
-							},
-							"name": "orderheaderstream"
-						},
-						{
-							"dataset": {
-								"referenceName": "OrdersInPool",
-								"type": "DatasetReference"
-							},
-							"name": "GETMAXCustomerSK"
-						},
-						{
-							"dataset": {
-								"referenceName": "OrdersInPool",
-								"type": "DatasetReference"
-							},
-							"name": "ListOfOrderIds"
-						}
-					],
-					"sinks": [
-						{
-							"name": "OrdersSKSink"
-						},
-						{
-							"dataset": {
-								"referenceName": "OrdersInPool",
-								"type": "DatasetReference"
-							},
-							"name": "dimOrders"
-						}
-					],
-					"transformations": [
-						{
-							"name": "customerjointoorderheader"
-						},
-						{
-							"name": "selectColumns"
-						},
-						{
-							"name": "OrdersSK"
-						},
-						{
-							"name": "DerivedColumnsTotalAmountOrdersSK"
-						},
-						{
-							"name": "OrderIdDoesNotExist"
-						},
-						{
-							"name": "DropRowIfCustomerIdIsNull"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          customerid as integer,",
-						"          customername as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> customertablestream",
-						"source(output(",
-						"          orderid as integer,",
-						"          ordernumber as string,",
-						"          customerid as integer",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> orderheaderstream",
-						"source(output(",
-						"          ordersSK as integer",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     query: 'SELECT coalesce(MAX(ordersSK), 0) as ordersSK from dbo.orders',",
-						"     format: 'query',",
-						"     staged: true) ~> GETMAXCustomerSK",
-						"source(output(",
-						"          orderId as integer",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     query: 'SELECT distinct orderId from dbo.orders',",
-						"     format: 'query',",
-						"     staged: true) ~> ListOfOrderIds",
-						"customertablestream, OrderIdDoesNotExist join(customertablestream@customerid == orderheaderstream@customerid,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> customerjointoorderheader",
-						"customerjointoorderheader select(mapColumn(",
-						"          customerid = customertablestream@customerid,",
-						"          customername,",
-						"          orderid,",
-						"          ordernumber",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> selectColumns",
-						"DropRowIfCustomerIdIsNull keyGenerate(output(OrdersSK as long),",
-						"     startAt: 1L,",
-						"     stepValue: 1L) ~> OrdersSK",
-						"OrdersSK derive(OrdersSK = coalesce(OrdersSK, 0) + coalesce(OrdersSKSink#outputs()[1].ordersSK, 0),",
-						"          TotalAmount = multiply(coalesce(customerid, 0), coalesce(orderid, 0))) ~> DerivedColumnsTotalAmountOrdersSK",
-						"orderheaderstream, ListOfOrderIds exists(orderheaderstream@orderid == ListOfOrderIds@orderId,",
-						"     negate:true,",
-						"     broadcast: 'auto')~> OrderIdDoesNotExist",
-						"selectColumns filter(!(isNull({customerid}))) ~> DropRowIfCustomerIdIsNull",
-						"GETMAXCustomerSK sink(validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     store: 'cache',",
-						"     format: 'inline',",
-						"     output: false,",
-						"     saveOrder: 0,",
-						"     mapColumn(",
-						"          ordersSK",
-						"     )) ~> OrdersSKSink",
-						"DerivedColumnsTotalAmountOrdersSK sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          ordersSK as integer,",
-						"          orderId as integer,",
-						"          customerId as integer,",
-						"          CustomerName as string,",
-						"          OrderNumber as string,",
-						"          TotalAmount as integer",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          ordersSK = OrdersSK,",
-						"          orderId = orderid,",
-						"          customerId = customerid,",
-						"          CustomerName = customername,",
-						"          OrderNumber = ordernumber,",
-						"          TotalAmount",
-						"     )) ~> dimOrders"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/customerTable')]",
-				"[concat(variables('factoryId'), '/datasets/orderheadertable')]",
-				"[concat(variables('factoryId'), '/datasets/OrdersInPool')]"
 			]
 		}
 	]
