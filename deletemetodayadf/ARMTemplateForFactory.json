@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'lsparquet_log'"
 		},
+		"lsCSV_new_log_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'lsCSV_new_log'"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
@@ -40,6 +44,10 @@
 			"defaultValue": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
 		},
 		"lsparquet_log_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
+		},
+		"lsCSV_new_log_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://mrjstrggen2anonne3.dfs.core.windows.net/"
 		}
@@ -73,7 +81,7 @@
 								"parameters": {},
 								"datasetParameters": {
 									"logcsvstream": {
-										"filename": "log.csv"
+										"filename": "Log.csv"
 									},
 									"sink1": {}
 								}
@@ -268,7 +276,7 @@
 								"referenceName": "dsCSV_log",
 								"type": "DatasetReference",
 								"parameters": {
-									"filename": "log.csv"
+									"filename": "Log.csv"
 								}
 							}
 						],
@@ -467,7 +475,8 @@
 				},
 				"parameters": {
 					"filename": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "log.csv"
 					}
 				},
 				"annotations": [],
@@ -476,7 +485,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@{dataset().FileName}",
+							"value": "@dataset().filename",
 							"type": "Expression"
 						},
 						"fileSystem": "csv"
@@ -995,6 +1004,105 @@
 				"[concat(variables('factoryId'), '/datasets/orderheadertable')]",
 				"[concat(variables('factoryId'), '/datasets/OrdersInPool')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dsCSV_new_log')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsCSV_new_log",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string",
+						"defaultValue": "log.csv"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"fileSystem": "csv"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Id",
+						"type": "String"
+					},
+					{
+						"name": "Correlationid",
+						"type": "String"
+					},
+					{
+						"name": "Operationname",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					},
+					{
+						"name": "Eventcategory",
+						"type": "String"
+					},
+					{
+						"name": "Level",
+						"type": "String"
+					},
+					{
+						"name": "Time",
+						"type": "String"
+					},
+					{
+						"name": "Subscription",
+						"type": "String"
+					},
+					{
+						"name": "Eventinitiatedby",
+						"type": "String"
+					},
+					{
+						"name": "Resourcetype",
+						"type": "String"
+					},
+					{
+						"name": "Resourcegroup",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsCSV_new_log')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/lsCSV_new_log')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('lsCSV_new_log_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('lsCSV_new_log_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }
