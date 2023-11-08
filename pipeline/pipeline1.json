@@ -20,7 +20,7 @@
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"logcsvstream": {
-								"filename": "log.csv"
+								"filename": "Log.csv"
 							}
 						}
 					},
@@ -213,7 +213,7 @@
 						"referenceName": "dsCSV_log",
 						"type": "DatasetReference",
 						"parameters": {
-							"filename": "log.csv"
+							"filename": "Log.csv"
 						}
 					}
 				],
