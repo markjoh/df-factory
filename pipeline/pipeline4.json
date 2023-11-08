@@ -16,17 +16,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "dsCSV_log",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": "Log.csv"
-						}
+						"referenceName": "dsCSV_customer",
+						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"childItems"
+						"columnCount"
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
